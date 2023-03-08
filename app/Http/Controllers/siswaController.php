@@ -22,6 +22,7 @@ class siswaController extends Controller
         // native query function
         // $siswas3 = DB::select('select * from siswas');
         return view('siswa', compact('siswas', 'jenkel'));
+        // compact() is a function that can be used to parse multiple variables into a view
     }
 
     /**
@@ -41,10 +42,25 @@ class siswaController extends Controller
         $siswas = new Siswas();
         // storing data to database
         // based on database | based on html form
-        $siswas->id_jenkel = $request->id_jenkel;
         $siswas->nama = $request->nama;
-        $siswas->tgl_lahir = $request->tgl_lahir;
+        $siswas->id_jenkel = $request->id_jenkel;
         $siswas->nik = $request->nik;
+        $siswas->tgl_lahir = $request->tgl_lahir;
+        $siswas->jurusan = $request->jurusan;
+        $siswas->angkatan = $request->angkatan;
+        $siswas->alamat = $request->alamat;
+        $siswas->save();
+        
+        // if the data has been stored successfully, create an alert
+        if ($siswas) {
+            return redirect()->route('siswa')->with([
+                'success' => 'Data berhasil disimpan'
+            ]);
+        } else {
+            return redirect('/siswa')->with([
+                'error' => 'Data gagal disimpan'
+            ]);
+        }
     }
 
     /**

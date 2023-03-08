@@ -4,6 +4,18 @@
   @include('layout.css')
   <body>
     <h1 class="text-center my-4">Data Alumni</h1>
+    <div class="w-100 container px-2 mb-4">
+      @if (session('success'))
+        <div class="alert alert-success">
+          <p class="text-center m-0">{{ session('success') }}</p>
+        </div>
+      @endif
+      @if (session('error'))
+        <div class="alert alert-success">
+          <p class="text-center m-0">{{ session('error') }}</p>
+        </div>
+      @endif
+    </div>
     <!-- Create a table -->
     <div class="container">  
       <!-- Button trigger modal -->
@@ -53,7 +65,8 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form method="post">
+              <form method="post" action="{{route('siswa.store')}}">
+                @csrf
                 <div class="input-group mb-3">
                   <span class="input-group-text">Nama</span>
                   <input type="text" id="i-nama" name="nama" class="form-control" placeholder="Masukkan Namamu...">
