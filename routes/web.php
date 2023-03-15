@@ -28,5 +28,6 @@
 
     Route::get('/siswa', [siswaController::class, 'index'])->name('siswa');
     Route::post('/siswa/create/success', [siswaController::class, 'store'])->name('siswa.store');
-
+    Route::get('/siswa/delete/success/{id}', [siswaController::class, 'destroy'])->name('siswa.delete');
+    Route::get('/siswa/update/success/{id}', [siswaController::class, 'update'])->name('siswa.update');
 ?>

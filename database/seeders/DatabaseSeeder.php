@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
 
         // Declaration of seeder
         $this->call(createJenkelSeeder::class);
+        $this->call(createSiswaSeeder::class);
     }
 }

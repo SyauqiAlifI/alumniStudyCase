@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Siswas;
 use App\Models\jenis_kelamin;
+use App\Http\Requests\siswaValidate;
 
 class siswaController extends Controller
 {
@@ -14,7 +15,7 @@ class siswaController extends Controller
     public function index()
     {
         // query builder fucntion
-        $siswas = Siswas::get();
+        $siswas = Siswas::paginate(10);
 
         $jenkel = jenis_kelamin::get();
         // orm eloquent function
@@ -36,8 +37,22 @@ class siswaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(siswaValidate $request)
     {
+        // make a validation for the backend
+        /* $this->validate(
+            $request,
+            [
+                // custom error message
+                'nama.required' => 'Fill up the name bruh 🗿',
+                'id_jenkel.required' => 'Choose your gender or you are gay 🗿',
+                'nik.required' => 'Seriously you don\'t have NIK? 🗿',
+                'nik.unique' => 'This NIK is used bro... use yours 🗿',
+                'jurusan.required' => 'Just fill this thing k? 🗿',
+                'angkatan.required' => 'What is your graduation, 0? 🗿',
+                'alamat.required' => 'Your place so i can say hi to you 🗿',
+            ]
+        ); */
         // to store data, using eloquent method
         $siswas = new Siswas();
         // storing data to database
@@ -84,7 +99,27 @@ class siswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // edit data
+        $siswas = Siswas::find($id);
+        $siswas->nama = $request->nama;
+        $siswas->id_jenkel = $request->id_jenkel;
+        $siswas->nik = $request->nik;
+        $siswas->tgl_lahir = $request->tgl_lahir;
+        $siswas->jurusan = $request->jurusan;
+        $siswas->angkatan = $request->angkatan;
+        $siswas->alamat = $request->alamat;
+        $siswas->save();
+
+        // if the data has been stored successfully, create an alert
+        if ($siswas) {
+            return redirect()->route('siswa')->with([
+                'success' => 'Data berhasil diupdate'
+            ]);
+        } else {
+            return redirect('/siswa')->with([
+                'error' => 'Data gagal diupdate'
+            ]);
+        }
     }
 
     /**
@@ -92,6 +127,19 @@ class siswaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Delete data
+        $siswas = Siswas::find($id);
+        $siswas->delete();
+
+        if ($siswas) {
+            return redirect()->route('siswa')->with([
+                'success' => 'Data berhasil dihapus'
+            ]);
+        } else {
+            return redirect('/siswa')->with([
+                'error' => 'Data gagal dihapus'
+            ]);
+        }
     }
+    
 }
