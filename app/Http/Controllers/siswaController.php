@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Siswas;
 use App\Models\jenis_kelamin;
 use App\Http\Requests\siswaValidate;
-use Illuminate\Support\Facades\Storage;
 use File;
+use PDF;
 
 class siswaController extends Controller
 {
@@ -17,7 +17,7 @@ class siswaController extends Controller
     public function index()
     {
         // query builder fucntion
-        $siswas = Siswas::orderBy('created_at', 'desc')->paginate(15);
+        $siswas = Siswas::with('jenkels')->orderBy('created_at', 'desc')->paginate(15);
 
         $jenkel = jenis_kelamin::get();
         // orm eloquent function
@@ -26,6 +26,15 @@ class siswaController extends Controller
         // $siswas3 = DB::select('select * from siswas');
         return view('siswa', compact('siswas', 'jenkel'));
         // compact() is a function that can be used to parse multiple variables into a view
+    }
+
+    public function exportPDF()
+    {
+        // ini_set('memory_limit','512M');
+        // don't use external css when trying download pdf, it will slow down execution time!
+        $siswas = Siswas::all();
+        $export = PDF::loadView('siswaPdf', ['siswas'=>$siswas]);
+        return $export->download('pdf_siswa.pdf');
     }
 
     /**

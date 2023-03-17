@@ -22,6 +22,7 @@
       <button type="button" class="btn btn-outline-success mx-auto w-100" data-bs-toggle="modal" data-bs-target="#create-modal">
         Create new data +
       </button>
+      <a href="{{route('siswa.pdf')}}" type="submit" class="btn btn-outline-secondary my-2 w-100">Print as PDF</a>
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -29,6 +30,7 @@
               <th class="col-auto">No.</th>
               <th class="col-auto">Foto</th>
               <th class="col-auto">Nama</th>
+              <th class="col-auto">Jenis Kelamin</th>
               <th class="col-auto">NIK</th>
               <th class="col-auto">Tanggal Lahir</th>
               <th class="col-auto">Jurusan</th>
@@ -51,6 +53,10 @@
                   @endif
                 </td>
                 <td class="col-auto">{{ $s->nama }}</td>
+                @foreach ($s->jenkels as $jenis_kelamin)
+                  
+                @endforeach
+                <td class="col-auto"></td>
                 <td class="col-auto">{{ $s->nik }}</td>
                 <td class="col-auto">
                   @if (isset($s->tgl_lahir))

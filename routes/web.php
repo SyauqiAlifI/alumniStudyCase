@@ -27,6 +27,7 @@
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::get('/siswa', [siswaController::class, 'index'])->name('siswa');
+    Route::get('/siswa/print', [siswaController::class, 'exportPDF'])->name('siswa.pdf');
     Route::post('/siswa/create/success', [siswaController::class, 'store'])->name('siswa.store');
     Route::get('/siswa/delete/success/{id}', [siswaController::class, 'destroy'])->name('siswa.delete');
     Route::put('/siswa/update/success/{id}', [siswaController::class, 'update'])->name('siswa.update');
