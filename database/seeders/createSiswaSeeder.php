@@ -16,7 +16,7 @@ class createSiswaSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             // insert data ke table siswas
             DB::table('siswas')->insert([
                 'nama' => $faker->name,

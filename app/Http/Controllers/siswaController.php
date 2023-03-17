@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Siswas;
 use App\Models\jenis_kelamin;
 use App\Http\Requests\siswaValidate;
+use Illuminate\Support\Facades\Storage;
+use File;
 
 class siswaController extends Controller
 {
@@ -15,7 +17,7 @@ class siswaController extends Controller
     public function index()
     {
         // query builder fucntion
-        $siswas = Siswas::paginate(10);
+        $siswas = Siswas::orderBy('created_at', 'desc')->paginate(15);
 
         $jenkel = jenis_kelamin::get();
         // orm eloquent function
@@ -53,6 +55,7 @@ class siswaController extends Controller
                 'alamat.required' => 'Your place so i can say hi to you 🗿',
             ]
         ); */
+
         // to store data, using eloquent method
         $siswas = new Siswas();
         // storing data to database
@@ -64,6 +67,20 @@ class siswaController extends Controller
         $siswas->jurusan = $request->jurusan;
         $siswas->angkatan = $request->angkatan;
         $siswas->alamat = $request->alamat;
+        // Defining the folder where the file will be stored
+        $path = 'uploads/';
+        // a Condition when the file is uploading
+        if (File::isDirectory($path)) {
+            // another condition when the file is already exist in the folder
+            // Defining a variable to store the request file
+            $file = $request->file('photo');
+            // defining a variable for a format file name
+            $fileName = time().'_'.$file->getClientOriginalName();
+            // moving/storing the file to the folder
+            $file->move($path, $fileName);
+            // storing the file name to the database
+            $siswas->photo = $fileName;
+        }
         $siswas->save();
         
         // if the data has been stored successfully, create an alert
@@ -97,7 +114,7 @@ class siswaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(siswaValidate $request, string $id)
     {
         // edit data
         $siswas = Siswas::find($id);
@@ -108,6 +125,21 @@ class siswaController extends Controller
         $siswas->jurusan = $request->jurusan;
         $siswas->angkatan = $request->angkatan;
         $siswas->alamat = $request->alamat;
+        $path = 'uploads/'.$siswas->photo;
+        if ($request->hasFile('photo')) {
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+            // another condition when the file is already exist in the folder
+            // Defining a variable to store the request file
+            $file = $request->file('photo');
+            // defining a variable for a format file name
+            $fileName = time().'_'.$file->getClientOriginalName();
+            // moving/storing the file to the folder
+            $file->move('uploads/', $fileName);
+            // storing the file name to the database
+            $siswas->photo = $fileName;
+        }
         $siswas->save();
 
         // if the data has been stored successfully, create an alert
@@ -129,6 +161,12 @@ class siswaController extends Controller
     {
         // Delete data
         $siswas = Siswas::find($id);
+        // Defining path
+        $path = 'uploads/'.$siswas->photo;
+        // a condition when there's file then it will also delete it
+        if (File::exists($path)) {
+            File::delete($path);
+        }
         $siswas->delete();
 
         if ($siswas) {

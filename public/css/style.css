@@ -1,3 +1,8 @@
 .pagination {
   justify-content: center;
 }
+.avtr-img {
+  width: 5rem;
+  margin-right: .35rem;
+  margin-bottom: .35rem;
+}

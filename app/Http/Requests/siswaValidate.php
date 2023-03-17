@@ -24,7 +24,8 @@ class siswaValidate extends FormRequest
         return [
             'nama' => 'required|max:255',
             'id_jenkel' => 'required|integer',
-            'nik' => 'required|unique:siswas,nik|max:12',
+            // 'nik' => 'required|unique:siswas,nik|max:12',
+            'nik' => 'required|max:12',
             // note : tgl_lahir is not required ok
             'jurusan' => 'required|max:12',
             'angkatan' => 'required|max:2',
@@ -39,7 +40,6 @@ class siswaValidate extends FormRequest
             'nama.required' => 'Fill up the name bruh 🗿',
             'id_jenkel.required' => 'Choose your gender or you are gay 🗿',
             'nik.required' => 'Seriously you don\'t have NIK? 🗿',
-            'nik.unique' => 'This NIK is used bro... use yours 🗿',
             'jurusan.required' => 'Just fill this thing k? 🗿',
             'angkatan.required' => 'What is your graduation, 0? 🗿',
             'alamat.required' => 'Your place so i can say hi to you 🗿',

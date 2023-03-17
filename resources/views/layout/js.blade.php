@@ -18,4 +18,16 @@
       }
     })
   });
+
+  // event listener untuk tombol upload
+  $('.uploads').on('change', function(){
+    var input = $(this);
+    // membuat objek file reader untuk membaca nama file
+    var reader = new FileReader();
+    // menjalankan fungsi ketika data file sudah diupload
+    reader.onload = function(){
+      $('.avtr-img').attr('src', reader.result);
+    }
+    reader.readAsDataURL(input.files[0]);
+  });
 </script>

@@ -27,6 +27,7 @@
           <thead>
             <tr>
               <th class="col-auto">No.</th>
+              <th class="col-auto">Foto</th>
               <th class="col-auto">Nama</th>
               <th class="col-auto">NIK</th>
               <th class="col-auto">Tanggal Lahir</th>
@@ -42,6 +43,13 @@
               @foreach($siswas as $s)
               <tr>
                 <td class="col-auto">{{ $loop->iteration }}</td>
+                <td class="col-auto">
+                  @if ($s->photo == null)
+                    <img src="{{asset('avtr.jpg')}}" alt="default" class="avtr-img">
+                  @else
+                    <img src="{{asset('uploads/'.$s->photo)}}" alt="" class="avtr-img">  
+                  @endif
+                </td>
                 <td class="col-auto">{{ $s->nama }}</td>
                 <td class="col-auto">{{ $s->nik }}</td>
                 <td class="col-auto">
@@ -56,9 +64,10 @@
                 <td class="col-auto">{{ $s->alamat }}</td>
                 <td class="text-center col-auto">
                   {{-- Using form instead of a tag or other to safely secure the function --}}
-                  <button data-dir="{{route('siswa.delete',$s->id)}}" type="submit" class="delete-siswa btn btn-sm btn-danger">Delete</button>
+                  <button data-dir="{{route('siswa.delete',$s->id)}}" type="submit" class="delete-siswa btn btn-sm btn-danger mb-1">Delete</button>
+                  <br>
                   <!-- Edit button -->
-                  <button type="button" data-bs-toggle="modal" data-bs-target="#modal-edit_{{$s->id}}" class="edit-siswa btn btn-sm btn-primary">Edit</button>
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#modal-edit_{{$s->id}}" class="edit-siswa btn btn-sm btn-primary mt-1">Update</button>
                 </td>
               </tr>
               <!-- #modal-edit -->
@@ -68,7 +77,7 @@
                     <div class="modal-header">
                       <h5 class="modal-title" id="editModalLabel">Edit data</h5>
                     </div>
-                    <form method="GET" action="{{route('siswa.update', $s->id)}}">
+                    <form method="POST" action="{{route('siswa.update', $s->id)}}" enctype="multipart/form-data">
                       @csrf
                       @method('PUT')
                       <div class="modal-body">
@@ -76,7 +85,12 @@
                           <div class="col-md-6">
                             <div class="input-group mb-3">
                               <span class="input-group-text">Nama</span>
-                              <input type="text" id="i-edit-nama" name="nama" class="form-control" value="{{$s->nama}}" placeholder="Masukkan Namamu..." required>
+                              <input type="text" id="i-edit-nama" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{$s->nama}}" placeholder="Masukkan Namamu..." required>
+                              @error('nama')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                              @enderror
                             </div>
                           </div>
                           <div class="col-md-6">
@@ -95,7 +109,12 @@
                           <div class="col-md-6">
                             <div class="input-group mb-3">
                               <span class="input-group-text">NIK</span>
-                              <input type="text" id="i-edit-nik" name="nik" class="form-control" value="{{$s->nik}}" placeholder="Masukkan NIK..." required>
+                              <input type="text" id="i-edit-nik" name="nik" class="form-control @error('nik') is-invalid @enderror" value="{{$s->nik}}" placeholder="Masukkan NIK..." required>
+                              @error('nik')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                              @enderror
                             </div>
                           </div>
                           <div class="col-md-6">          
@@ -108,19 +127,47 @@
                           <div class="col-md-6">
                             <div class="input-group mb-3">
                               <span class="input-group-text">Jurusan</span>
-                              <input type="text" id="i-edit-jurusan" name="jurusan" class="form-control" value="{{$s->jurusan}}" placeholder="Nama Jurusan..." required>
+                              <input type="text" id="i-edit-jurusan" name="jurusan" class="form-control @error('jurusan') is-invalid @enderror" value="{{$s->jurusan}}" placeholder="Nama Jurusan..." required>
+                              @error('jurusan')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                              @enderror
                             </div>
                           </div>
                           <div class="col-md-6">
                             <div class="input-group mb-3">
                               <span class="input-group-text">Angkatan</span>
-                              <input type="text" id="i-edit-angkatan" name="angkatan" class="form-control" value="{{$s->angkatan}}" placeholder="Angkatan ke..." required>
+                              <input type="text" id="i-edit-angkatan" name="angkatan" class="form-control @error('angkatan') is-invalid @enderror" value="{{$s->angkatan}}" placeholder="Angkatan ke..." required>
+                              @error('angkatan')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                              @enderror
                             </div>
+                          </div>
+                          <div class="col-md-12">
+                            @if ($s->photo == null)
+                              <img id="previewImg-edit" src="{{asset('avtr.jpg')}}" class="avtr-img" alt="">
+                            @else
+                              <img id="previewImg-edit" src="{{asset('uploads/'.$s->photo)}}" class="avtr-img" alt="">  
+                            @endif
+                            <label for="i-photo" class="form-label">Foto</label>
+                            <div class="input-group">
+                              {{-- <span class="input-group-text">Foto</span> --}}
+                              <input class="form-control uploads" name="photo" id="i-edit-photo" type="file">
+                            </div>
+                            <label class="mb-3 text-warning" style="font-size: .85rem">*Biarkan kosong jika tidak ingin di isi</label>
                           </div>
                           <div class="col-md-12">
                             <div class="input-group mb-3">
                               <span class="input-group-text">Alamat</span>
-                              <textarea style="resize: none" id="i-edit-alamat" name="alamat" class="form-control" rows="5" required>{{$s->alamat}}</textarea>
+                              <textarea style="resize: none" id="i-edit-alamat" name="alamat" class="form-control @error('alamat') is-invalid @enderror" rows="5" required>{{$s->alamat}}</textarea>
+                              @error('alamat')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                              @enderror
                             </div>
                           </div>
                         </div>
@@ -153,7 +200,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form method="post" action="{{route('siswa.store')}}">
+              <form method="post" action="{{route('siswa.store')}}" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group mb-3">
                   <span class="input-group-text">Nama</span>
@@ -209,6 +256,15 @@
                       {{ $message }}
                     </div>
                   @enderror
+                </div>
+                <div class="col-md-12">
+                  <img id="previewImg" src="{{asset('avtr.jpg')}}" class="avtr-img" alt="">
+                  <label for="i-photo" class="form-label">Foto</label>
+                  <div class="input-group">
+                    {{-- <span class="input-group-text">Foto</span> --}}
+                    <input class="form-control uploads" name="photo" id="i-photo" type="file">
+                  </div>
+                  <label class="mb-3 text-warning" style="font-size: .85rem">*Biarkan kosong jika tidak ingin di isi</label>
                 </div>
                 <div class="input-group mb-3">
                   <span class="input-group-text">Alamat</span>
